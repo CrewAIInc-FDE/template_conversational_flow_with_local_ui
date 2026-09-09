@@ -13,13 +13,30 @@
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <div class="app">
-      <!-- Left rail: app mark + new chat -->
+    <!-- Connection overlay: verifies the AMP automation is live on load -->
+    <div id="connection-overlay" class="overlay">
+      <div class="overlay-card">
+        <div class="overlay-visual">
+          <div class="spinner"></div>
+          <div class="overlay-error-mark">!</div>
+        </div>
+        <div id="overlay-title" class="overlay-title">Connecting to AMP</div>
+        <div id="overlay-msg" class="overlay-msg">
+          Checking that the automation is live and running.
+        </div>
+        <button id="overlay-retry" class="overlay-retry" hidden>
+          Reload connection
+        </button>
+      </div>
+    </div>
+
+    <div class="app" id="app" hidden>
+      <!-- Left rail: app mark + new channel -->
       <nav class="rail">
         <div class="rail-mark" title="Research Assistant">
           <span class="mark-curve"></span>
         </div>
-        <button id="new-chat" class="rail-btn" title="New chat">
+        <button id="rail-add" class="rail-btn" title="New channel">
           <span>+</span>
         </button>
       </nav>
@@ -32,9 +49,17 @@
         </div>
 
         <div class="channels">
-          <div class="channels-label">Channels</div>
-          <div class="channel active" data-channel="assistant">
-            <span class="hash">#</span> assistant
+          <div class="channels-head">
+            <span class="channels-label">Channels</span>
+            <button id="add-channel" class="add-channel" title="Create channel">
+              +
+            </button>
+          </div>
+          <div id="channel-list" class="channel-list">
+            <!-- channels injected here -->
+          </div>
+          <div id="channel-empty" class="channel-empty">
+            No channels yet. Click + to create one.
           </div>
 
           <div class="channels-label">Capabilities</div>
@@ -59,7 +84,7 @@
             <span class="avatar avatar-user">You</span>
             <div class="user-meta">
               <div class="user-name">You</div>
-              <div class="user-status" id="conn-status">connecting...</div>
+              <div class="user-status" id="conn-status">connected</div>
             </div>
           </div>
         </div>
@@ -68,7 +93,10 @@
       <!-- Main chat -->
       <main class="chat">
         <header class="chat-header">
-          <div class="chat-title"><span class="hash">#</span> assistant</div>
+          <div class="chat-title">
+            <span class="hash">#</span>
+            <span id="active-channel-name">select a channel</span>
+          </div>
           <div class="chat-status" id="header-status">connected</div>
         </header>
 
@@ -82,10 +110,11 @@
               id="composer-input"
               class="composer-input"
               rows="1"
-              placeholder="Message #assistant"
+              placeholder="Create or select a channel to start"
               autocomplete="off"
+              disabled
             ></textarea>
-            <button id="send-btn" type="submit" class="send-btn" title="Send">
+            <button id="send-btn" type="submit" class="send-btn" title="Send" disabled>
               Send
             </button>
           </form>

@@ -154,6 +154,56 @@ body {
   margin-top: 0;
 }
 
+/* Channels header with add button */
+.channels-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 8px 6px;
+}
+
+.channels-head .channels-label {
+  margin: 0;
+}
+
+.add-channel {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.add-channel:hover {
+  background: var(--panel-3);
+  border-color: var(--accent);
+}
+
+.add-channel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.channel-empty {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--muted-2);
+  line-height: 1.5;
+}
+
 .channel {
   display: flex;
   align-items: center;
@@ -163,6 +213,35 @@ body {
   color: var(--muted);
   cursor: pointer;
   font-weight: 500;
+}
+
+.channel-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel-del {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--muted-2);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0;
+  transition: opacity 0.12s, color 0.12s;
+}
+
+.channel:hover .channel-del {
+  opacity: 1;
+}
+
+.channel-del:hover {
+  color: var(--danger);
 }
 
 .channel:hover {
@@ -719,4 +798,131 @@ body {
   .sidebar {
     display: none;
   }
+}
+
+/* ---------- Connection overlay ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+    circle at 50% 35%,
+    rgba(229, 182, 17, 0.08),
+    var(--bg) 60%
+  );
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  padding: 36px 40px;
+  max-width: 420px;
+}
+
+.overlay-visual {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+}
+
+/* Fancy gold ring spinner */
+.spinner {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--accent-bright),
+    var(--accent) 40%,
+    var(--accent-soft) 60%,
+    transparent 78%
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 7px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 7px)
+  );
+  animation: spin 0.9s linear infinite;
+  box-shadow: 0 0 24px rgba(229, 182, 17, 0.25);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state: hide spinner, show a red mark */
+.overlay-error-mark {
+  position: absolute;
+  display: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--danger);
+  color: var(--danger);
+  font-size: 34px;
+  font-weight: 800;
+  place-items: center;
+}
+
+.overlay.error .spinner {
+  display: none;
+}
+
+.overlay.error .overlay-error-mark {
+  display: grid;
+}
+
+.overlay-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.overlay.error .overlay-title {
+  color: var(--danger);
+}
+
+.overlay-msg {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.overlay-retry {
+  margin-top: 6px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gold-gradient);
+  color: #000;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+}
+
+.overlay-retry:hover {
+  filter: brightness(1.08);
+}
+
+.overlay-retry:active {
+  transform: scale(0.97);
 }

@@ -55,6 +55,25 @@ def _amp_error(resp: httpx.Response) -> HTTPException:
     return HTTPException(status_code=resp.status_code, detail=detail)
 
 
+@app.get("/api/health")
+def health() -> dict:
+    """Confirm the AMP automation is live by hitting /health and /inputs."""
+    try:
+        h = httpx.get(f"{BASE_URL}/health", headers=HEADERS, timeout=15)
+        i = httpx.get(f"{BASE_URL}/inputs", headers=HEADERS, timeout=15)
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=502, detail=f"Cannot reach AMP: {exc}")
+    if h.status_code >= 400:
+        raise _amp_error(h)
+    if i.status_code >= 400:
+        raise _amp_error(i)
+    return {
+        "ok": True,
+        "health": h.json(),
+        "inputs": i.json().get("inputs", []),
+    }
+
+
 @app.post("/api/start")
 def start() -> dict:
     """Create a new chat session on the AMP deployment."""
