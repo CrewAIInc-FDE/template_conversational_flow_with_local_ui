@@ -7,7 +7,7 @@ requires-python = ">=3.10,<3.14"
 dependencies = [
     "crewai[tools]>=1.15.20,<2.0.0",
     "exa-py>=2.20.0",
-    "fastapi>=0.141.1",
+    "fastapi==0.135.3",
     "httpx>=0.28.1",
     "python-dotenv>=1.2.3",
     "uvicorn>=0.52.4",
