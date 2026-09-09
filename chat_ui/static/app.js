@@ -23,15 +23,40 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Minimal, safe-ish formatting: escape first, then linkify + inline code + newlines.
-function formatContent(text) {
+// User text: escape + linkify bare URLs. Newlines are preserved via the
+// `.plain` CSS class (white-space: pre-wrap).
+function formatPlain(text) {
   let html = escapeHtml(text);
   html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
   html = html.replace(
     /(https?:\/\/[^\s<]+)/g,
-    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    '<a href="$1">$1</a>'
   );
   return html;
+}
+
+// Assistant text: render markdown (bold, lists, links, headings, code) then
+// sanitize. Falls back to plain formatting if the libraries aren't available.
+function formatMarkdown(text) {
+  const source = text == null ? "" : String(text);
+  if (window.marked && window.DOMPurify) {
+    const rawHtml = window.marked.parse(source, {
+      breaks: true,
+      gfm: true,
+    });
+    return window.DOMPurify.sanitize(rawHtml, {
+      ADD_ATTR: ["target", "rel"],
+    });
+  }
+  return formatPlain(source);
+}
+
+// Make every link open safely in a new tab.
+function hardenLinks(container) {
+  container.querySelectorAll("a").forEach((a) => {
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noopener noreferrer");
+  });
 }
 
 function nowTime() {
@@ -77,6 +102,9 @@ function renderMessage(role, content, opts = {}) {
     ? `<span class="msg-badge">${escapeHtml(opts.badge)}</span>`
     : "";
 
+  const textHtml = isBot ? formatMarkdown(content) : formatPlain(content);
+  const textClass = isBot ? "msg-text markdown" : "msg-text plain";
+
   wrap.innerHTML = `
     ${avatar}
     <div class="msg-body">
@@ -85,9 +113,10 @@ function renderMessage(role, content, opts = {}) {
         ${badge}
         <span class="msg-time">${opts.time || nowTime()}</span>
       </div>
-      <div class="msg-text">${formatContent(content)}</div>
+      <div class="${textClass}">${textHtml}</div>
     </div>`;
   els.messages.appendChild(wrap);
+  hardenLinks(wrap);
   return wrap;
 }
 
