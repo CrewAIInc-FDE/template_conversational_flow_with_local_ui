@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Left rail: app mark + new chat -->
+      <nav class="rail">
+        <div class="rail-mark" title="Research Assistant">
+          <span class="mark-curve"></span>
+        </div>
+        <button id="new-chat" class="rail-btn" title="New chat">
+          <span>+</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar: title + channels -->
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-word">Research<span>Assistant</span></div>
+          <div class="brand-sub">Powered by CrewAI</div>
+        </div>
+
+        <div class="channels">
+          <div class="channels-label">Channels</div>
+          <div class="channel active" data-channel="assistant">
+            <span class="hash">#</span> assistant
+          </div>
+
+          <div class="channels-label">Capabilities</div>
+          <div class="capability">
+            <span class="dot dot-gold"></span>
+            <div>
+              <div class="cap-name">Web search</div>
+              <div class="cap-desc">Find current info on the web via Exa</div>
+            </div>
+          </div>
+          <div class="capability">
+            <span class="dot dot-tan"></span>
+            <div>
+              <div class="cap-name">Focused scope</div>
+              <div class="cap-desc">Only web search &mdash; other tasks are declined</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="user-chip">
+            <span class="avatar avatar-user">You</span>
+            <div class="user-meta">
+              <div class="user-name">You</div>
+              <div class="user-status" id="conn-status">connecting...</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main chat -->
+      <main class="chat">
+        <header class="chat-header">
+          <div class="chat-title"><span class="hash">#</span> assistant</div>
+          <div class="chat-status" id="header-status">connected</div>
+        </header>
+
+        <section class="messages" id="messages" aria-live="polite">
+          <!-- welcome / messages injected here -->
+        </section>
+
+        <footer class="composer">
+          <form id="composer-form" class="composer-form">
+            <textarea
+              id="composer-input"
+              class="composer-input"
+              rows="1"
+              placeholder="Message #assistant"
+              autocomplete="off"
+            ></textarea>
+            <button id="send-btn" type="submit" class="send-btn" title="Send">
+              Send
+            </button>
+          </form>
+          <div class="composer-hint">
+            Enter to send &middot; Shift+Enter for a new line
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
